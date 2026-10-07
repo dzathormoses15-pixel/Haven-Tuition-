@@ -1,18 +1,206 @@
-{
-  "tutors": [
-    {
-      "name": "Mr. Kwame Mensah",
-      "photo": "images/kwame.jpg",
-      "subjects": ["Mathematics", "Physics"],
-      "levels": ["SHS", "University"],
-      "pricePerHour": 80,
-      "currency": "GHS",
-      "location": "Accra, East Legon",
-      "phone": "+233 24 123 4567",
-      "email": "kwame@example.com",
-      "qualifications": "BSc Mathematics (UG), MPhil Physics (KNUST)",
-      "certificates": ["images/kwame-bsc.jpg"],
-      "bio": "8 years of experience helping SHS students pass WASSCE with A's."
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pleiades — Find Qualified Tutors in Ghana</title>
+  <meta name="description" content="Pleiades connects students in Ghana with qualified, verified tutors for Primary, JHS, SHS and University levels." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        <span class="logo-mark">✦</span>
+        <span class="logo-text">Pleiades</span>
+      </a>
+      <nav class="nav">
+        <a href="#tutors">Find a Tutor</a>
+        <a href="#how">How It Works</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <h1>Find the right tutor.<br/>Learn with confidence.</h1>
+      <p class="hero-sub">
+        Pleiades connects students across Ghana — Primary, JHS, SHS and University —
+        with qualified, verified tutors in every subject.
+      </p>
+
+      <!-- ============ SEARCH BAR ============ -->
+      <div class="search-bar">
+        <div class="search-field">
+          <label>Subject</label>
+          <input type="text" id="searchSubject" placeholder="e.g. Mathematics" />
+        </div>
+        <div class="search-field">
+          <label>Level</label>
+          <select id="searchLevel">
+            <option value="">All Levels</option>
+            <option value="Primary">Primary</option>
+            <option value="JHS">JHS</option>
+            <option value="SHS">SHS</option>
+            <option value="University">University</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Location</label>
+          <input type="text" id="searchLocation" placeholder="e.g. Accra" />
+        </div>
+        <button class="search-btn" onclick="filterTutors()">Search</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TUTOR LISTINGS ============ -->
+  <section class="section" id="tutors">
+    <div class="container">
+      <h2 class="section-title">Our Facilitators</h2>
+      <p class="section-sub">Verified tutors ready to help you succeed.</p>
+
+      <div id="tutorGrid" class="tutor-grid">
+        <!-- Tutor cards are injected here by JavaScript -->
+      </div>
+
+      <p id="noResults" class="no-results" style="display:none;">
+        No tutors match your search. Try different keywords.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="section section-alt" id="how">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Search</h3>
+          <p>Filter tutors by subject, level, and location.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Compare</h3>
+          <p>See prices, qualifications and experience side by side.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Contact</h3>
+          <p>Call, WhatsApp or email the tutor directly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section" id="contact">
+    <div class="container contact-inner">
+      <h2 class="section-title">Get in Touch</h2>
+      <p>Are you a qualified tutor who wants to be listed on Pleiades?<br/>
+        Or a student who needs help finding the right match?</p>
+      <p class="contact-line">
+        📧 <a href="mailto:hello@pleiades.com">hello@pleiades.com</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; <span id="year"></span> Pleiades. Built with care in Ghana.</p>
+      <p class="footer-small">Connecting students and tutors, one lesson at a time.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    let allTutors = [];
+
+    // Load tutors from JSON file
+    fetch('tutors.json')
+      .then(res => res.json())
+      .then(data => {
+        allTutors = data.tutors;
+        renderTutors(allTutors);
+      })
+      .catch(err => {
+        console.error('Could not load tutors.json', err);
+        document.getElementById('tutorGrid').innerHTML =
+          '<p style="grid-column:1/-1;text-align:center;color:#888;">Tutor data loading... Please make sure tutors.json exists.</p>';
+      });
+
+    // Render tutor cards
+    function renderTutors(tutors) {
+      const grid = document.getElementById('tutorGrid');
+      const noResults = document.getElementById('noResults');
+      grid.innerHTML = '';
+
+      if (!tutors.length) {
+        noResults.style.display = 'block';
+        return;
+      }
+      noResults.style.display = 'none';
+
+      tutors.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'tutor-card';
+
+        const subjects = t.subjects.map(s => `<span class="tag">${s}</span>`).join('');
+        const levels = t.levels.map(l => `<span class="tag tag-level">${l}</span>`).join('');
+
+        card.innerHTML = `
+          <div class="tutor-photo">
+            <img src="${t.photo}" alt="${t.name}" onerror="this.src='https://via.placeholder.com/300x300/0b6e4f/ffffff?text=${encodeURIComponent(t.name.charAt(0))}'" />
+          </div>
+          <div class="tutor-body">
+            <h3 class="tutor-name">${t.name}</h3>
+            <div class="tags">${subjects}</div>
+            <div class="tags">${levels}</div>
+            <p class="tutor-bio">${t.bio}</p>
+
+            <div class="tutor-info">
+              <p><span class="info-icon">🎓</span> ${t.qualifications}</p>
+              <p><span class="info-icon">📍</span> ${t.location}</p>
+              <p><span class="info-icon">💵</span> <strong>GHS ${t.pricePerHour}</strong> / hour</p>
+            </div>
+
+            <div class="tutor-actions">
+              <a class="btn btn-primary" href="tel:${t.phone.replace(/\s/g,'')}">📞 Call</a>
+              <a class="btn btn-whatsapp" href="https://wa.me/${t.phone.replace(/[^0-9]/g,'')}" target="_blank">WhatsApp</a>
+              <a class="btn btn-outline" href="mailto:${t.email}">✉️ Email</a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
     }
-  ]
-}
+
+    // Filter tutors
+    function filterTutors() {
+      const subject = document.getElementById('searchSubject').value.toLowerCase().trim();
+      const level = document.getElementById('searchLevel').value;
+      const location = document.getElementById('searchLocation').value.toLowerCase().trim();
+
+      const filtered = allTutors.filter(t => {
+        const matchSubject = !subject || t.subjects.some(s => s.toLowerCase().includes(subject));
+        const matchLevel = !level || t.levels.includes(level);
+        const matchLocation = !location || t.location.toLowerCase().includes(location);
+        return matchSubject && matchLevel && matchLocation;
+      });
+
+      renderTutors(filtered);
+      document.getElementById('tutors').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
