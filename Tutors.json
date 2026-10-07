@@ -1,0 +1,56 @@
+{
+  "tutors": [
+    {
+      "name": "Mr. Kwame Mensah",
+      "photo": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop",
+      "subjects": ["Mathematics", "Physics"],
+      "levels": ["SHS", "University"],
+      "pricePerHour": 80,
+      "currency": "GHS",
+      "location": "East Legon, Accra",
+      "phone": "+233 24 123 4567",
+      "email": "kwame@example.com",
+      "qualifications": "BSc Mathematics (University of Ghana), MPhil Physics (KNUST)",
+      "bio": "8 years of experience helping SHS students pass WASSCE with distinction."
+    },
+    {
+      "name": "Ms. Ama Owusu",
+      "photo": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=400&fit=crop",
+      "subjects": ["English Language", "Literature"],
+      "levels": ["JHS", "SHS"],
+      "pricePerHour": 60,
+      "currency": "GHS",
+      "location": "Adum, Kumasi",
+      "phone": "+233 20 987 6543",
+      "email": "ama@example.com",
+      "qualifications": "BA English (University of Cape Coast), Diploma in Education",
+      "bio": "Patient and friendly tutor specialising in BECE and WASSCE English preparation."
+    },
+    {
+      "name": "Mr. Yaw Asante",
+      "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop",
+      "subjects": ["ICT", "Computer Science"],
+      "levels": ["SHS", "University"],
+      "pricePerHour": 100,
+      "currency": "GHS",
+      "location": "Community 25, Tema",
+      "phone": "+233 55 456 7890",
+      "email": "yaw@example.com",
+      "qualifications": "BSc Computer Science (Ashesi University), Google Certified Educator",
+      "bio": "Teaches coding, web development and ICT with a practical, hands-on approach."
+    },
+    {
+      "name": "Mrs. Akosua Boateng",
+      "photo": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
+      "subjects": ["Mathematics", "Science"],
+      "levels": ["Primary", "JHS"],
+      "pricePerHour": 45,
+      "currency": "GHS",
+      "location": "Takoradi",
+      "phone": "+233 27 111 2233",
+      "email": "akosua@example.com",
+      "qualifications": "BEd Basic Education (University of Education, Winneba)",
+      "bio": "Gentle with young learners. Builds strong foundations in Maths and Science."
+    }
+  ]
+}
