@@ -1,18 +1,13 @@
 /* ===================================================
-   PLEIADES ADMIN PANEL LOGIC
+   PLEIADES ADMIN PANEL — Firebase Version
    =================================================== */
 
-// ============ CHANGE THIS PASSWORD ============
-const ADMIN_PASSWORD = "pleiades2026";
-// ==============================================
-
-const STORAGE_KEY = "pleiades_tutors";
+const ADMIN_PASSWORD = "pleiades2026";  // ← Change this later!
 
 // ---------- LOGIN ----------
 function tryLogin() {
   const entered = document.getElementById("passwordInput").value;
   const errorEl = document.getElementById("loginError");
-
   if (entered === ADMIN_PASSWORD) {
     sessionStorage.setItem("pleiades_admin_logged_in", "yes");
     showAdmin();
@@ -22,7 +17,6 @@ function tryLogin() {
   }
 }
 
-// Allow pressing Enter on password field
 document.addEventListener("DOMContentLoaded", () => {
   const pwd = document.getElementById("passwordInput");
   if (pwd) {
@@ -30,8 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Enter") tryLogin();
     });
   }
-
-  // Auto-login if session is active
   if (sessionStorage.getItem("pleiades_admin_logged_in") === "yes") {
     showAdmin();
   }
@@ -48,22 +40,8 @@ function logout() {
   location.reload();
 }
 
-// ---------- DATA STORAGE ----------
-function getTutors() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function saveTutors(tutors) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tutors));
-}
-
-// ---------- ADD TUTOR ----------
-function addTutor() {
+// ---------- ADD TUTOR (Firebase) ----------
+async function addTutor() {
   const msg = document.getElementById("formMessage");
 
   const tutor = {
@@ -89,18 +67,25 @@ function addTutor() {
     return;
   }
 
-  const tutors = getTutors();
-  tutors.unshift(tutor); // newest first
-  saveTutors(tutors);
+  msg.textContent = "⏳ Saving to Firebase...";
+  msg.className = "form-message";
 
-  msg.textContent = `✅ "${tutor.name}" added successfully!`;
-  msg.className = "form-message success";
-
-  clearForm();
-  renderTutorList();
-
-  // Clear success message after 4 sec
-  setTimeout(() => { msg.textContent = ""; }, 4000);
+  try {
+    const { collection, addDoc, serverTimestamp } = window.fb;
+    await addDoc(collection(window.db, "tutors"), {
+      ...tutor,
+      createdAt: serverTimestamp()
+    });
+    msg.textContent = `✅ "${tutor.name}" saved to Firebase!`;
+    msg.className = "form-message success";
+    clearForm();
+    renderTutorList();
+    setTimeout(() => { msg.textContent = ""; }, 4000);
+  } catch (err) {
+    console.error(err);
+    msg.textContent = "❌ Error: " + err.message;
+    msg.className = "form-message error";
+  }
 }
 
 function clearForm() {
@@ -110,41 +95,59 @@ function clearForm() {
   });
 }
 
-// ---------- RENDER TUTOR LIST ----------
-function renderTutorList() {
+// ---------- LOAD & RENDER TUTORS ----------
+async function renderTutorList() {
   const container = document.getElementById("tutorList");
-  const tutors = getTutors();
+  container.innerHTML = '<p class="empty-list">Loading from Firebase...</p>';
 
-  document.getElementById("tutorCount").textContent = tutors.length;
+  try {
+    const { collection, getDocs, orderBy, query } = window.fb;
+    const q = query(collection(window.db, "tutors"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    const tutors = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-  if (!tutors.length) {
-    container.innerHTML = '<p class="empty-list">No tutors yet. Add one using the form above.</p>';
-    return;
+    document.getElementById("tutorCount").textContent = tutors.length;
+
+    if (!tutors.length) {
+      container.innerHTML = '<p class="empty-list">No tutors yet. Add one using the form above.</p>';
+      return;
+    }
+
+    container.innerHTML = tutors.map(t => `
+      <div class="tutor-row">
+        <img src="${t.photo}" alt="${t.name}"
+             onerror="this.src='https://via.placeholder.com/100/0b6e4f/ffffff?text=${encodeURIComponent(t.name.charAt(0))}'" />
+        <div class="tutor-row-info">
+          <h3>${t.name}</h3>
+          <p>${t.subjects.join(", ")} · ${t.levels.join(", ")} · GHS ${t.pricePerHour}/hr</p>
+          <p>📍 ${t.location}</p>
+        </div>
+        <div class="tutor-row-actions">
+          <button class="btn-delete" onclick="deleteTutor('${t.id}', '${t.name.replace(/'/g, "")}')">🗑 Delete</button>
+        </div>
+      </div>
+    `).join("");
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = `<p class="empty-list">❌ Error loading: ${err.message}</p>`;
   }
-
-  container.innerHTML = tutors.map((t, i) => `
-    <div class="tutor-row">
-      <img src="${t.photo}" alt="${t.name}"
-           onerror="this.src='https://via.placeholder.com/100/0b6e4f/ffffff?text=${encodeURIComponent(t.name.charAt(0))}'" />
-      <div class="tutor-row-info">
-        <h3>${t.name}</h3>
-        <p>${t.subjects.join(", ")} · ${t.levels.join(", ")} · GHS ${t.pricePerHour}/hr</p>
-        <p>📍 ${t.location}</p>
-      </div>
-      <div class="tutor-row-actions">
-        <button class="btn-delete" onclick="deleteTutor(${i})">🗑 Delete</button>
-      </div>
-    </div>
-  `).join("");
 }
 
 // ---------- DELETE TUTOR ----------
-function deleteTutor(index) {
-  const tutors = getTutors();
-  const name = tutors[index].name;
+async function deleteTutor(id, name) {
   if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
-
-  tutors.splice(index, 1);
-  saveTutors(tutors);
-  renderTutorList();
+  try {
+    const { doc, deleteDoc } = window.fb;
+    await deleteDoc(doc(window.db, "tutors", id));
+    renderTutorList();
+  } catch (err) {
+    alert("Error deleting: " + err.message);
+  }
 }
+
+// ---------- MAKE FUNCTIONS GLOBAL ----------
+window.tryLogin = tryLogin;
+window.logout = logout;
+window.addTutor = addTutor;
+window.clearForm = clearForm;
+window.deleteTutor = deleteTutor;
