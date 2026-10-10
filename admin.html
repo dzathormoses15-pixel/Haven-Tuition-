@@ -122,6 +122,36 @@
     </div>
   </div>
 
-  <script src="admin.js"></script>
+    <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    // ==== Pleiades Firebase Config ====
+    const firebaseConfig = {
+      apiKey: "AIzaSyBA4Ve72skXtZzb3Vei4_N5qKVfYYakOVI",
+      authDomain: "pleiades-tutors.firebaseapp.com",
+      projectId: "pleiades-tutors",
+      storageBucket: "pleiades-tutors.firebasestorage.app",
+      messagingSenderId: "350092138061",
+      appId: "1:350092138061:web:8b1ac02db623f84807ee04"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    window.db = getFirestore(app);
+
+    // Expose Firebase helpers globally for admin.js
+    import { collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    window.fb = {
+      collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp
+    };
+
+    // Load admin.js AFTER Firebase is ready
+    const s = document.createElement('script');
+    s.src = 'admin.js';
+    document.body.appendChild(s);
+  </script>
 </body>
 </html>
