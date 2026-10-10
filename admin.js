@@ -1,46 +1,88 @@
 /* ===================================================
-   PLEIADES ADMIN PANEL — Firebase Version
+   PLEIADES ADMIN PANEL — Firebase Auth Version
    =================================================== */
 
-const ADMIN_PASSWORD = "pleiades2026";  // ← Change this later!
-
-// ---------- LOGIN ----------
-function tryLogin() {
-  const entered = document.getElementById("passwordInput").value;
+// ---------- LOGIN (Firebase Auth) ----------
+async function tryLogin() {
+  const email = document.getElementById("emailInput").value.trim();
+  const password = document.getElementById("passwordInput").value;
   const errorEl = document.getElementById("loginError");
-  if (entered === ADMIN_PASSWORD) {
-    sessionStorage.setItem("pleiades_admin_logged_in", "yes");
-    showAdmin();
-  } else {
-    errorEl.textContent = "❌ Wrong password. Try again.";
-    document.getElementById("passwordInput").value = "";
+
+  if (!email || !password) {
+    errorEl.textContent = "⚠️ Please enter both email and password.";
+    return;
+  }
+
+  errorEl.textContent = "⏳ Signing in...";
+
+  try {
+    const { signInWithEmailAndPassword } = window.fb;
+    await signInWithEmailAndPassword(window.auth, email, password);
+    // onAuthStateChanged will handle the rest
+  } catch (err) {
+    console.error(err);
+    if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
+      errorEl.textContent = "❌ Wrong email or password.";
+    } else if (err.code === "auth/invalid-email") {
+      errorEl.textContent = "❌ Invalid email format.";
+    } else if (err.code === "auth/too-many-requests") {
+      errorEl.textContent = "❌ Too many attempts. Please wait a few minutes.";
+    } else {
+      errorEl.textContent = "❌ " + err.message;
+    }
   }
 }
 
+// ---------- LOGOUT ----------
+async function logout() {
+  try {
+    const { signOut } = window.fb;
+    await signOut(window.auth);
+    location.reload();
+  } catch (err) {
+    console.error(err);
+    location.reload();
+  }
+}
+
+// ---------- AUTH STATE — show/hide screens ----------
+function setupAuthListener() {
+  const { onAuthStateChanged } = window.fb;
+  onAuthStateChanged(window.auth, (user) => {
+    const loginScreen = document.getElementById("loginScreen");
+    const adminPanel = document.getElementById("adminPanel");
+
+    if (user) {
+      // Logged in
+      loginScreen.style.display = "none";
+      adminPanel.style.display = "block";
+      renderTutorList();
+    } else {
+      // Logged out
+      loginScreen.style.display = "flex";
+      adminPanel.style.display = "none";
+    }
+  });
+}
+
+// Enter key submits the login form
 document.addEventListener("DOMContentLoaded", () => {
-  const pwd = document.getElementById("passwordInput");
-  if (pwd) {
-    pwd.addEventListener("keydown", (e) => {
+  const passwordInput = document.getElementById("passwordInput");
+  const emailInput = document.getElementById("emailInput");
+  if (passwordInput) {
+    passwordInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") tryLogin();
     });
   }
-  if (sessionStorage.getItem("pleiades_admin_logged_in") === "yes") {
-    showAdmin();
+  if (emailInput) {
+    emailInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") tryLogin();
+    });
   }
+  setupAuthListener();
 });
 
-function showAdmin() {
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("adminPanel").style.display = "block";
-  renderTutorList();
-}
-
-function logout() {
-  sessionStorage.removeItem("pleiades_admin_logged_in");
-  location.reload();
-}
-
-// ---------- ADD TUTOR (Firebase) ----------
+// ---------- ADD TUTOR ----------
 async function addTutor() {
   const msg = document.getElementById("formMessage");
 
@@ -58,7 +100,6 @@ async function addTutor() {
     bio: document.getElementById("f_bio").value.trim()
   };
 
-  // Validation
   if (!tutor.name || !tutor.photo || !tutor.subjects.length || !tutor.levels.length ||
       !tutor.pricePerHour || !tutor.location || !tutor.phone ||
       !tutor.email || !tutor.qualifications || !tutor.bio) {
@@ -76,7 +117,7 @@ async function addTutor() {
       ...tutor,
       createdAt: serverTimestamp()
     });
-    msg.textContent = `✅ "${tutor.name}" saved to Firebase!`;
+    msg.textContent = `✅ "${tutor.name}" saved!`;
     msg.className = "form-message success";
     clearForm();
     renderTutorList();
@@ -91,13 +132,15 @@ async function addTutor() {
 function clearForm() {
   ["f_name","f_photo","f_subjects","f_levels","f_price",
    "f_location","f_phone","f_email","f_quals","f_bio"].forEach(id => {
-    document.getElementById(id).value = "";
+    const el = document.getElementById(id);
+    if (el) el.value = "";
   });
 }
 
 // ---------- LOAD & RENDER TUTORS ----------
 async function renderTutorList() {
   const container = document.getElementById("tutorList");
+  if (!container) return;
   container.innerHTML = '<p class="empty-list">Loading from Firebase...</p>';
 
   try {
@@ -116,14 +159,14 @@ async function renderTutorList() {
     container.innerHTML = tutors.map(t => `
       <div class="tutor-row">
         <img src="${t.photo}" alt="${t.name}"
-             onerror="this.src='https://via.placeholder.com/100/0b6e4f/ffffff?text=${encodeURIComponent(t.name.charAt(0))}'" />
+             onerror="this.src='https://via.placeholder.com/100/0b6e4f/ffffff?text=${encodeURIComponent((t.name || '?').charAt(0))}'" />
         <div class="tutor-row-info">
           <h3>${t.name}</h3>
-          <p>${t.subjects.join(", ")} · ${t.levels.join(", ")} · GHS ${t.pricePerHour}/hr</p>
+          <p>${(t.subjects || []).join(", ")} · ${(t.levels || []).join(", ")} · GHS ${t.pricePerHour}/hr</p>
           <p>📍 ${t.location}</p>
         </div>
         <div class="tutor-row-actions">
-          <button class="btn-delete" onclick="deleteTutor('${t.id}', '${t.name.replace(/'/g, "")}')">🗑 Delete</button>
+          <button class="btn-delete" onclick="deleteTutor('${t.id}', '${(t.name || '').replace(/'/g, "")}')">🗑 Delete</button>
         </div>
       </div>
     `).join("");
@@ -145,7 +188,7 @@ async function deleteTutor(id, name) {
   }
 }
 
-// ---------- MAKE FUNCTIONS GLOBAL ----------
+// ---------- EXPOSE GLOBALLY FOR HTML BUTTONS ----------
 window.tryLogin = tryLogin;
 window.logout = logout;
 window.addTutor = addTutor;
