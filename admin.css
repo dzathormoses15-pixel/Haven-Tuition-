@@ -1,0 +1,394 @@
+/* ===================================================
+   PLEIADES ADMIN PANEL STYLES
+   =================================================== */
+
+:root {
+  --green: #0b6e4f;
+  --green-dark: #084d37;
+  --green-light: #e7f4ee;
+  --gold: #f4b400;
+  --gold-soft: #fff5d6;
+  --text: #1f2937;
+  --text-soft: #6b7280;
+  --border: #e5e7eb;
+  --bg: #f8fafc;
+  --danger: #dc2626;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+h1, h2, h3, .login-logo, .admin-logo, .admin-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+
+/* ============ LOGIN SCREEN ============ */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+}
+.login-box {
+  background: white;
+  padding: 40px 32px;
+  border-radius: var(--radius);
+  box-shadow: 0 20px 50px rgba(0,0,0,.2);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+.login-logo {
+  color: var(--green);
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+.login-box h1 {
+  font-size: 1.4rem;
+  margin-bottom: 6px;
+  color: var(--green-dark);
+}
+.login-box > p {
+  color: var(--text-soft);
+  font-size: .9rem;
+  margin-bottom: 20px;
+}
+.login-box input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.login-box input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .2s;
+}
+.login-box button:hover { background: var(--green-dark); }
+.login-error {
+  color: var(--danger);
+  font-size: .9rem;
+  margin-top: 10px;
+  min-height: 18px;
+}
+.login-hint {
+  font-size: .78rem !important;
+  color: var(--text-soft) !important;
+  margin-top: 14px !important;
+  margin-bottom: 0 !important;
+}
+.login-hint code {
+  background: var(--green-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: .8rem;
+  color: var(--green-dark);
+}
+
+/* ============ ADMIN HEADER ============ */
+.admin-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.admin-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.admin-logo {
+  color: var(--green);
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-logo span {
+  background: var(--gold);
+  color: #1a1a1a;
+  font-size: .7rem;
+  padding: 3px 8px;
+  border-radius: 100px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.link-btn {
+  color: var(--green);
+  font-size: .9rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: background .2s;
+}
+.link-btn:hover { background: var(--green-light); }
+.logout-btn {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text);
+  transition: all .2s;
+}
+.logout-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ============ ADMIN CONTAINER ============ */
+.admin-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+}
+.admin-title {
+  font-size: 1.8rem;
+  color: var(--green-dark);
+  margin-bottom: 4px;
+}
+.admin-sub {
+  color: var(--text-soft);
+  margin-bottom: 26px;
+}
+
+/* ============ FORM CARD ============ */
+.form-card, .list-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 26px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  border: 1px solid var(--border);
+  margin-bottom: 26px;
+}
+.form-card h2, .list-card h2 {
+  font-size: 1.15rem;
+  color: var(--green-dark);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.form-field-full {
+  grid-column: 1 / -1;
+}
+.form-field label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.form-field input,
+.form-field textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: .95rem;
+  font-family: inherit;
+  color: var(--text);
+  background: white;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  resize: vertical;
+}
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+.form-field small {
+  font-size: .75rem;
+  color: var(--text-soft);
+}
+.form-field small code {
+  background: var(--bg);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: .75rem;
+}
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+.btn-save {
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 12px 26px;
+  border-radius: var(--radius-sm);
+  font-size: .95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.btn-save:hover {
+  background: var(--green-dark);
+  transform: translateY(-1px);
+}
+.btn-clear {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  font-size: .95rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-soft);
+  transition: all .2s;
+}
+.btn-clear:hover {
+  border-color: var(--text-soft);
+  color: var(--text);
+}
+.form-message {
+  margin-top: 14px;
+  font-size: .9rem;
+  font-weight: 500;
+  min-height: 20px;
+}
+.form-message.success { color: var(--green); }
+.form-message.error { color: var(--danger); }
+
+/* ============ TUTOR LIST ============ */
+.count-badge {
+  background: var(--green-light);
+  color: var(--green-dark);
+  font-size: .75rem;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-weight: 600;
+}
+.list-sub {
+  font-size: .85rem;
+  color: var(--text-soft);
+  margin-bottom: 16px;
+}
+.tutor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tutor-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  flex-wrap: wrap;
+}
+.tutor-row img {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--green-light);
+}
+.tutor-row-info {
+  flex: 1;
+  min-width: 180px;
+}
+.tutor-row-info h3 {
+  font-size: 1rem;
+  color: var(--green-dark);
+  margin-bottom: 2px;
+}
+.tutor-row-info p {
+  font-size: .82rem;
+  color: var(--text-soft);
+}
+.tutor-row-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-delete {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--danger);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: .82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-delete:hover {
+  background: var(--danger);
+  color: white;
+  border-color: var(--danger);
+}
+.empty-list {
+  text-align: center;
+  color: var(--text-soft);
+  padding: 30px 10px;
+  font-size: .92rem;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .form-card, .list-card { padding: 20px 16px; }
+  .admin-title { font-size: 1.5rem; }
+  .btn-save, .btn-clear { flex: 1; }
+  .tutor-row-actions { width: 100%; }
+  .btn-delete { flex: 1; }
+}
