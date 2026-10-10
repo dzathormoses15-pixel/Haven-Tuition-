@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pleiades — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <div class="login-logo">✦ Pleiades</div>
+      <h1>Admin Login</h1>
+      <p>Enter your password to manage tutors.</p>
+      <input type="password" id="passwordInput" placeholder="Password" />
+      <button onclick="tryLogin()">Log In</button>
+      <p id="loginError" class="login-error"></p>
+      <p class="login-hint">Default password: <code>pleiades2026</code> (change it in admin.js)</p>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN DASHBOARD ============ -->
+  <div id="adminPanel" class="admin-panel" style="display:none;">
+
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <div class="admin-logo">✦ Pleiades <span>Admin</span></div>
+        <div class="admin-actions">
+          <a href="index.html" target="_blank" class="link-btn">View Site ↗</a>
+          <button onclick="logout()" class="logout-btn">Log Out</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-container">
+
+      <h1 class="admin-title">Manage Tutors</h1>
+      <p class="admin-sub">Add new tutors below. They will appear on the main site instantly (on this device).</p>
+
+      <!-- ============ ADD TUTOR FORM ============ -->
+      <div class="form-card">
+        <h2>➕ Add a New Tutor</h2>
+
+        <div class="form-grid">
+
+          <div class="form-field">
+            <label>Full Name *</label>
+            <input type="text" id="f_name" placeholder="e.g. Mr. Kwame Mensah" />
+          </div>
+
+          <div class="form-field">
+            <label>Photo URL *</label>
+            <input type="text" id="f_photo" placeholder="https://... or upload to repo and use filename" />
+            <small>Tip: Upload a photo to your repo, then use its filename like <code>kwame.jpg</code></small>
+          </div>
+
+          <div class="form-field">
+            <label>Subjects (comma-separated) *</label>
+            <input type="text" id="f_subjects" placeholder="Mathematics, Physics" />
+          </div>
+
+          <div class="form-field">
+            <label>Levels (comma-separated) *</label>
+            <input type="text" id="f_levels" placeholder="SHS, University" />
+            <small>Use: Primary, JHS, SHS, University</small>
+          </div>
+
+          <div class="form-field">
+            <label>Price per Hour (GHS) *</label>
+            <input type="number" id="f_price" placeholder="80" />
+          </div>
+
+          <div class="form-field">
+            <label>Location *</label>
+            <input type="text" id="f_location" placeholder="East Legon, Accra" />
+          </div>
+
+          <div class="form-field">
+            <label>Phone *</label>
+            <input type="text" id="f_phone" placeholder="+233 24 123 4567" />
+          </div>
+
+          <div class="form-field">
+            <label>Email *</label>
+            <input type="email" id="f_email" placeholder="kwame@example.com" />
+          </div>
+
+          <div class="form-field form-field-full">
+            <label>Qualifications *</label>
+            <input type="text" id="f_quals" placeholder="BSc Mathematics (University of Ghana), MPhil Physics (KNUST)" />
+          </div>
+
+          <div class="form-field form-field-full">
+            <label>Short Bio *</label>
+            <textarea id="f_bio" rows="3" placeholder="8 years of experience helping SHS students pass WASSCE with distinction."></textarea>
+          </div>
+
+        </div>
+
+        <div class="form-buttons">
+          <button class="btn-save" onclick="addTutor()">💾 Save Tutor</button>
+          <button class="btn-clear" onclick="clearForm()">Clear Form</button>
+        </div>
+
+        <p id="formMessage" class="form-message"></p>
+      </div>
+
+      <!-- ============ EXISTING TUTORS LIST ============ -->
+      <div class="list-card">
+        <h2>📋 Current Tutors <span id="tutorCount" class="count-badge">0</span></h2>
+        <p class="list-sub">Tutors added via this panel are stored on this device/browser only.</p>
+        <div id="tutorList" class="tutor-list">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
