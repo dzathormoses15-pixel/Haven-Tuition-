@@ -124,20 +124,40 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    let allTutors = [];
+        let allTutors = [];
 
-    // Load tutors from JSON file
-    fetch('tutors.json')
-      .then(res => res.json())
-      .then(data => {
-        allTutors = data.tutors;
+    // Load tutors from Firebase
+    async function loadTutorsFromFirebase() {
+      try {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js");
+        const { getFirestore, collection, getDocs, orderBy, query } = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
+
+        // ==== Pleiades Firebase Config ====
+        const firebaseConfig = {
+          apiKey: "AIzaSyBA4Ve72skXtZzb3Vei4_N5qKVfYYakOVI",
+          authDomain: "pleiades-tutors.firebaseapp.com",
+          projectId: "pleiades-tutors",
+          storageBucket: "pleiades-tutors.firebasestorage.app",
+          messagingSenderId: "350092138061",
+          appId: "1:350092138061:web:8b1ac02db623f84807ee04"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const q = query(collection(db, "tutors"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        allTutors = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
         renderTutors(allTutors);
-      })
-      .catch(err => {
-        console.error('Could not load tutors.json', err);
+      } catch (err) {
+        console.error('Firebase error:', err);
         document.getElementById('tutorGrid').innerHTML =
-          '<p style="grid-column:1/-1;text-align:center;color:#888;">Tutor data loading... Please make sure tutors.json exists.</p>';
-      });
+          '<p style="grid-column:1/-1;text-align:center;color:#888;">Could not load tutors. Please refresh.</p>';
+      }
+    }
+
+    loadTutorsFromFirebase();
 
     // Render tutor cards
     function renderTutors(tutors) {
