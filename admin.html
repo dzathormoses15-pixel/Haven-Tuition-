@@ -11,15 +11,15 @@
 <body>
 
   <!-- ============ LOGIN SCREEN ============ -->
-  <div id="loginScreen" class="login-screen">
+    <div id="loginScreen" class="login-screen">
     <div class="login-box">
       <div class="login-logo">✦ Pleiades</div>
       <h1>Admin Login</h1>
-      <p>Enter your password to manage tutors.</p>
-      <input type="password" id="passwordInput" placeholder="Password" />
+      <p>Sign in with your admin email and password.</p>
+      <input type="email" id="emailInput" placeholder="Email" autocomplete="email" />
+      <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" />
       <button onclick="tryLogin()">Log In</button>
       <p id="loginError" class="login-error"></p>
-      <p class="login-hint">Default password: <code>pleiades2026</code> (change it in admin.js)</p>
     </div>
   </div>
 
