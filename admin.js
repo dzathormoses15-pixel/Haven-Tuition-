@@ -15,11 +15,22 @@ async function tryLogin() {
 
   errorEl.textContent = "⏳ Signing in...";
 
-  try {
+    try {
     const { signInWithEmailAndPassword } = window.fb;
-    await signInWithEmailAndPassword(window.auth, email, password);
-    // onAuthStateChanged will handle the rest
-  } catch (err) {
+    
+    // Create a 15-second timeout
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error("Connection timeout. Please check your internet connection.")), 15000)
+    );
+
+    // Race between the login and the timeout
+    await Promise.race([
+      signInWithEmailAndPassword(window.auth, email, password),
+      timeoutPromise
+    ]);
+    
+    // onAuthStateChanged will handle showing the admin panel
+  } catch (err) { 
     console.error(err);
     if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
       errorEl.textContent = "❌ Wrong email or password.";
