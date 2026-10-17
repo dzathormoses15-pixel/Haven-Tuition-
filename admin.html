@@ -122,16 +122,14 @@
     </div>
   </div>
 
-        <!-- Firebase SDKs -->
+          <!-- Firebase SDKs -->
   <script type="module">
+    // 1. ALL imports MUST be at the very top
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
-      from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-    import { collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp }
-      from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-    // ==== Pleiades Firebase Config ====
+    // 2. Config
     const firebaseConfig = {
       apiKey: "AIzaSyBA4Ve72skXtZzb3Vei4_N5qKVfYYakOVI",
       authDomain: "pleiades-tutors.firebaseapp.com",
@@ -141,16 +139,18 @@
       appId: "1:350092138061:web:8b1ac02db623f84807ee04"
     };
 
+    // 3. Initialize Firebase
     const app = initializeApp(firebaseConfig);
     window.db = getFirestore(app);
     window.auth = getAuth(app);
 
+    // 4. Pass helpers to admin.js
     window.fb = {
       collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp,
       signInWithEmailAndPassword, signOut, onAuthStateChanged
     };
 
-    // Load admin.js AFTER Firebase is ready
+    // 5. Load admin.js
     const s = document.createElement('script');
     s.src = 'admin.js';
     document.body.appendChild(s);
